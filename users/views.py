@@ -15,7 +15,7 @@ from .utils import send_otp_email
 import random
 
 
-# ================= REGISTER =================
+# REGISTER 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -34,7 +34,7 @@ class RegisterView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
-# ================= VERIFY OTP =================
+# VERIFY OTP 
 class VerifyOTPView(APIView):
     permission_classes = [AllowAny]
 
@@ -59,7 +59,7 @@ class VerifyOTPView(APIView):
             return Response({"error": "User not found"}, status=400)
 
 
-# ================= LOGIN =================
+# LOGIN 
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -73,7 +73,7 @@ class LoginView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ================= FORGOT PASSWORD =================
+# FORGOT PASSWORD 
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -93,7 +93,7 @@ class ForgotPasswordView(APIView):
             return Response({"error": "User not found"}, status=400)
 
 
-# ================= RESET PASSWORD =================
+#  RESET PASSWORD 
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -119,7 +119,7 @@ class ResetPasswordView(APIView):
             return Response({"error": "User not found"}, status=400)
 
 
-# ================= GOOGLE LOGIN =================
+# = GOOGLE LOGIN 
 class GoogleLoginView(APIView):
     permission_classes = [AllowAny]
 

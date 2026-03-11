@@ -10,11 +10,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # ================= SECURITY =================
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-key")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,.onrender.com"
+).split(",")
 
 # ================= APPLICATIONS =================
 INSTALLED_APPS = [
@@ -46,6 +49,9 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 
     "django.middleware.security.SecurityMiddleware",
+
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
 
@@ -63,11 +69,8 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
         "DIRS": [],
-
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
 
@@ -97,7 +100,7 @@ DATABASES = {
 
         "HOST": os.getenv("DB_HOST"),
 
-        "PORT": os.getenv("DB_PORT"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -146,6 +149,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ================= MEDIA =================
 MEDIA_URL = "/media/"

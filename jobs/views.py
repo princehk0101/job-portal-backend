@@ -5,41 +5,54 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView
 )
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from .models import Job
-from .serializers import JobSerializer
+from .models import Job, JobCategory
+from .serializers import JobSerializer, JobCategorySerializer
 from .permissions import IsEmployer
 
 
-# ==========================================
 # Job List (Search + Filter + Ordering)
-# ==========================================
+
 class JobListView(ListAPIView):
-    queryset = Job.objects.filter(is_active=True).order_by('-created_at')
+
+    queryset = Job.objects.filter(is_active=True).order_by("-created_at")
     serializer_class = JobSerializer
     permission_classes = [AllowAny]
 
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter
+    ]
 
-    # 🔥 Improved filtering
     filterset_fields = {
-        'location': ['exact', 'icontains'],
-        'salary': ['gte', 'lte'],
-        'experience_required': ['gte'],
-        'job_type': ['exact'],
+        "location": ["exact", "icontains"],
+        "salary": ["gte", "lte"],
+        "experience_required": ["gte"],
+        "job_type": ["exact"],
+        "category": ["exact"],
     }
 
-    search_fields = ['title', 'description']
-    ordering_fields = ['salary', 'created_at']
+    search_fields = [
+        "title",
+        "description",
+        "location"
+    ]
+
+    ordering_fields = [
+        "salary",
+        "created_at"
+    ]
 
 
-# ==========================================
+
 # Create Job (Employer Only)
-# ==========================================
 class JobCreateView(CreateAPIView):
+
     serializer_class = JobSerializer
     permission_classes = [IsAuthenticated, IsEmployer]
 
@@ -47,19 +60,17 @@ class JobCreateView(CreateAPIView):
         serializer.save(employer=self.request.user)
 
 
-# ==========================================
-# Job Detail
-# ==========================================
+
 class JobDetailView(RetrieveAPIView):
+
     queryset = Job.objects.filter(is_active=True)
     serializer_class = JobSerializer
     permission_classes = [AllowAny]
 
 
-# ==========================================
-# Update Job (ONLY OWNER CAN UPDATE)
-# ==========================================
+
 class JobUpdateView(UpdateAPIView):
+
     serializer_class = JobSerializer
     permission_classes = [IsAuthenticated, IsEmployer]
 
@@ -70,10 +81,9 @@ class JobUpdateView(UpdateAPIView):
         )
 
 
-# ==========================================
-# Soft Delete Job (ONLY OWNER CAN DELETE)
-# ==========================================
+
 class JobDeleteView(DestroyAPIView):
+
     serializer_class = JobSerializer
     permission_classes = [IsAuthenticated, IsEmployer]
 
@@ -85,3 +95,10 @@ class JobDeleteView(DestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save()
+
+
+class JobCategoryListView(ListAPIView):
+
+    queryset = JobCategory.objects.all()
+    serializer_class = JobCategorySerializer
+    permission_classes = [AllowAny]

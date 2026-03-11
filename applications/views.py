@@ -12,9 +12,8 @@ from .permissions import IsSeeker, IsEmployer
 from jobs.models import Job
 
 
-# ===============================
 # Seeker Applies to Job
-# ===============================
+
 class ApplyJobView(APIView):
 
     permission_classes = [IsAuthenticated, IsSeeker]
@@ -48,9 +47,6 @@ class ApplyJobView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# ===============================
-# Seeker Views Own Applications
-# ===============================
 class MyApplicationsView(ListAPIView):
 
     serializer_class = ApplicationSerializer
@@ -63,9 +59,6 @@ class MyApplicationsView(ListAPIView):
         ).select_related('job')
 
 
-# ===============================
-# Employer Views Applicants
-# ===============================
 class JobApplicantsView(ListAPIView):
 
     serializer_class = ApplicationSerializer
@@ -86,9 +79,7 @@ class JobApplicantsView(ListAPIView):
         ).select_related('applicant')
 
 
-# ===============================
-# Employer Updates Status
-# ===============================
+
 class UpdateApplicationStatusView(UpdateAPIView):
 
     serializer_class = ApplicationStatusSerializer
@@ -102,9 +93,6 @@ class UpdateApplicationStatusView(UpdateAPIView):
         )
 
 
-# ===============================
-# Employer Dashboard
-# ===============================
 class EmployerDashboardView(APIView):
 
     permission_classes = [IsAuthenticated, IsEmployer]
